@@ -1,18 +1,22 @@
 ---
-- name: Ubuntu Güncelleme Kontrolü
+- name: Ubuntu Paket Güncelleme
   hosts: all
   become: yes
+  vars:
+    update_apparmor: yes
+    update_apt: yes
+    update_cloud_init: no
+    update_coreutils: no
+
   tasks:
-
-    - name: Paket listesini güncelle
+    - name: apparmor güncelle
       apt:
-        update_cache: yes
+        name: apparmor
+        state: latest
+      when: update_apparmor | bool
 
-    - name: Güncellenecek paketleri listele
-      command: apt list --upgradable
-      register: upgradable_packages
-      changed_when: false
-
-    - name: Sonuçları göster
-      debug:
-        msg: "{{ upgradable_packages.stdout_lines }}"
+    - name: apt güncelle
+      apt:
+        name: apt
+        state: latest
+      when: update_apt | bool
