@@ -1,0 +1,18 @@
+---
+- name: Ubuntu Güncelleme Kontrolü
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Paket listesini güncelle
+      apt:
+        update_cache: yes
+
+    - name: Güncellenecek paketleri listele
+      command: apt list --upgradable
+      register: upgradable_packages
+      changed_when: false
+
+    - name: Sonuçları göster
+      debug:
+        msg: "{{ upgradable_packages.stdout_lines }}"
